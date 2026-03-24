@@ -788,8 +788,7 @@
     <span>v1.0.0</span>
   </footer>
 
-  <script>
-    // Curseur custom
+<script>
     const cursor = document.getElementById('cursor');
     const dot = document.getElementById('cursorDot');
     document.addEventListener('mousemove', e => {
@@ -799,12 +798,27 @@
       dot.style.top     = e.clientY + 'px';
     });
 
-    // Glitch aléatoire sur le h1
     const glitch = document.querySelector('.glitch-wrap');
     setInterval(() => {
       glitch.style.animation = 'none';
       setTimeout(() => glitch.style.animation = '', 50);
     }, 5000);
-  </script>
+
+    // Lightbox CV
+    function openLightbox(src) {
+      document.getElementById('cvLightboxFrame').src = src;
+      document.getElementById('cvLightbox').classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+    function closeLightbox() {
+      document.getElementById('cvLightbox').classList.remove('open');
+      document.getElementById('cvLightboxFrame').src = '';
+      document.body.style.overflow = '';
+    }
+    document.getElementById('cvLightbox').addEventListener('click', function(e) {
+      if (e.target === this) closeLightbox();
+    });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
+</script>
 </body>
 </html>
