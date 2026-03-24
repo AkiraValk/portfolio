@@ -1,17 +1,832 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Page Bidon</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Portfolio — Chloé CHARON</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@300;500;700&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg:       #050810;
+      --bg2:      #0a0f1e;
+      --panel:    #0d1428;
+      --cyan:     #00f5ff;
+      --cyan-dim: #00b8bf;
+      --magenta:  #ff00aa;
+      --green:    #00ff88;
+      --text:     #c8d8f0;
+      --text-dim: #5a7090;
+      --border:   rgba(0,245,255,0.15);
+      --glow:     0 0 20px rgba(0,245,255,0.3);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Rajdhani', sans-serif;
+      font-weight: 300;
+      overflow-x: hidden;
+      cursor: none;
+    }
+
+    .cursor {
+      position: fixed; top: 0; left: 0; pointer-events: none; z-index: 9999;
+      width: 20px; height: 20px;
+      border: 1px solid var(--cyan);
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      transition: width .2s, height .2s, background .2s;
+      mix-blend-mode: screen;
+    }
+    .cursor-dot {
+      position: fixed; top: 0; left: 0; pointer-events: none; z-index: 9999;
+      width: 4px; height: 4px;
+      background: var(--cyan);
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+    }
+    body:hover .cursor { width: 28px; height: 28px; background: rgba(0,245,255,0.08); }
+
+    body::before {
+      content: '';
+      position: fixed; inset: 0; z-index: 0;
+      background-image:
+        linear-gradient(rgba(0,245,255,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,245,255,0.03) 1px, transparent 1px);
+      background-size: 60px 60px;
+      pointer-events: none;
+    }
+    body::after {
+      content: '';
+      position: fixed; inset: 0; z-index: 1; pointer-events: none;
+      background: repeating-linear-gradient(
+        0deg, transparent, transparent 2px,
+        rgba(0,0,0,0.08) 2px, rgba(0,0,0,0.08) 4px
+      );
+    }
+
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 1.2rem 3rem;
+      background: rgba(5,8,16,0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-logo {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1rem; font-weight: 700;
+      color: var(--cyan);
+      letter-spacing: .2em;
+      text-shadow: var(--glow);
+    }
+    nav ul { list-style: none; display: flex; gap: 2.5rem; }
+    nav a {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: .75rem; letter-spacing: .15em; text-transform: uppercase;
+      color: var(--text-dim); text-decoration: none;
+      position: relative; padding-bottom: 4px;
+      transition: color .3s;
+    }
+    nav a::after {
+      content: ''; position: absolute; bottom: 0; left: 0; width: 0; height: 1px;
+      background: var(--cyan); transition: width .3s;
+    }
+    nav a:hover { color: var(--cyan); }
+    nav a:hover::after { width: 100%; }
+
+    section { position: relative; z-index: 2; }
+
+    #hero {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      align-items: center;
+      padding: 8rem 5rem 4rem;
+      gap: 4rem;
+    }
+
+    .hero-text { animation: fadeInLeft .8s ease both; }
+
+    .hero-tag {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: .75rem; letter-spacing: .3em;
+      color: var(--cyan); text-transform: uppercase;
+      margin-bottom: 1rem; opacity: 0.8;
+    }
+    .hero-tag::before { content: '> '; color: var(--magenta); }
+
+    h1 {
+      font-family: 'Orbitron', sans-serif;
+      font-size: clamp(2.5rem, 5vw, 4.5rem);
+      font-weight: 900; line-height: 1.05;
+      letter-spacing: .02em; color: #fff;
+      text-shadow: 0 0 40px rgba(0,245,255,0.2);
+    }
+    h1 .accent { color: var(--cyan); display: block; }
+    h1 .accent2 { color: var(--magenta); }
+
+    .hero-subtitle {
+      font-size: 1.1rem; font-weight: 300; letter-spacing: .05em;
+      color: var(--text-dim); margin-top: 1.2rem; line-height: 1.6;
+    }
+
+    .hero-cta { margin-top: 2.5rem; display: flex; gap: 1rem; flex-wrap: wrap; }
+
+    .btn {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: .8rem; letter-spacing: .15em; text-transform: uppercase;
+      padding: .9rem 2rem;
+      border: 1px solid var(--cyan);
+      color: var(--cyan); background: transparent;
+      text-decoration: none;
+      position: relative; overflow: hidden;
+      cursor: none; transition: color .3s;
+    }
+    .btn::before {
+      content: ''; position: absolute; inset: 0;
+      background: var(--cyan);
+      transform: translateX(-100%);
+      transition: transform .3s cubic-bezier(.4,0,.2,1);
+      z-index: -1;
+    }
+    .btn:hover { color: var(--bg); }
+    .btn:hover::before { transform: translateX(0); }
+    .btn-ghost { border-color: var(--text-dim); color: var(--text-dim); }
+    .btn-ghost::before { background: var(--text-dim); }
+
+    .hero-visual {
+      position: relative;
+      display: flex; justify-content: center; align-items: center;
+      animation: fadeInRight .8s ease both;
+    }
+    .hero-img-wrap { position: relative; width: 340px; height: 420px; }
+    .hero-img-wrap::before {
+      content: ''; position: absolute; inset: -12px;
+      border: 1px solid var(--border);
+      animation: borderPulse 3s ease-in-out infinite;
+    }
+    .hero-img-wrap::after {
+      content: ''; position: absolute; inset: -24px;
+      border: 1px solid rgba(255,0,170,0.1);
+      animation: borderPulse 3s ease-in-out infinite .5s;
+    }
+    .hero-img-placeholder {
+      width: 100%; height: 100%;
+      background: var(--panel); border: 1px solid var(--border);
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center; gap: 1rem;
+      position: relative; overflow: hidden;
+      color: var(--text-dim);
+      font-family: 'Share Tech Mono', monospace;
+      font-size: .7rem; letter-spacing: .1em;
+    }
+    .hero-img-placeholder svg { opacity: .3; }
+    .corner { position: absolute; width: 20px; height: 20px; border-color: var(--cyan); border-style: solid; }
+    .corner-tl { top: 0; left: 0; border-width: 2px 0 0 2px; }
+    .corner-tr { top: 0; right: 0; border-width: 2px 2px 0 0; }
+    .corner-bl { bottom: 0; left: 0; border-width: 0 0 2px 2px; }
+    .corner-br { bottom: 0; right: 0; border-width: 0 2px 2px 0; }
+    .hero-badge {
+      position: absolute; bottom: -16px; right: -16px;
+      background: var(--bg2); border: 1px solid var(--cyan);
+      padding: .8rem 1.2rem;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: .65rem; letter-spacing: .1em;
+      color: var(--cyan); text-shadow: var(--glow);
+    }
+    .scanline-img {
+      position: absolute; inset: 0; pointer-events: none;
+      background: repeating-linear-gradient(
+        0deg, transparent, transparent 3px,
+        rgba(0,245,255,0.02) 3px, rgba(0,245,255,0.02) 4px
+      );
+      z-index: 1;
+    }
+
+    #about {
+      padding: 7rem 5rem;
+      background: linear-gradient(180deg, transparent, rgba(13,20,40,0.5) 50%, transparent);
+    }
+
+    .section-header {
+      display: flex; align-items: center; gap: 1.5rem;
+      margin-bottom: 3.5rem;
+    }
+    .section-num {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: .7rem; color: var(--magenta); letter-spacing: .2em;
+    }
+    .section-line { flex: 1; height: 1px; background: var(--border); }
+    h2 {
+      font-family: 'Orbitron', sans-serif;
+      font-size: clamp(1.4rem, 3vw, 2rem);
+      font-weight: 700; letter-spacing: .1em; color: #fff;
+    }
+
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1.4fr;
+      gap: 4rem; align-items: start;
+    }
+
+    .about-stats { display: flex; flex-direction: column; gap: 1.5rem; }
+
+    .stat-card {
+      background: var(--panel); border: 1px solid var(--border);
+      padding: 1.5rem; position: relative;
+      transition: border-color .3s, box-shadow .3s;
+    }
+    .stat-card:hover { border-color: rgba(0,245,255,0.4); box-shadow: var(--glow); }
+    .stat-card::before {
+      content: attr(data-label);
+      font-family: 'Share Tech Mono', monospace;
+      font-size: .6rem; letter-spacing: .2em;
+      color: var(--text-dim); text-transform: uppercase;
+      display: block; margin-bottom: .4rem;
+    }
+    .stat-value {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 2rem; font-weight: 700;
+      color: var(--cyan); text-shadow: var(--glow);
+    }
+    .stat-desc { font-size: .9rem; color: var(--text-dim); margin-top: .2rem; }
+
+    .about-text p {
+      font-size: 1.05rem; line-height: 1.8; color: var(--text);
+      margin-bottom: 1.4rem;
+    }
+    .about-text p strong { color: var(--cyan); font-weight: 500; }
+
+    .skills-list { display: flex; flex-wrap: wrap; gap: .6rem; margin-top: 2rem; }
+    .skill-tag {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: .7rem; letter-spacing: .1em;
+      padding: .4rem .9rem;
+      border: 1px solid var(--border);
+      color: var(--text-dim);
+      background: rgba(0,245,255,0.03);
+      transition: all .3s;
+    }
+    .skill-tag:hover {
+      color: var(--cyan); border-color: rgba(0,245,255,0.4);
+      background: rgba(0,245,255,0.07);
+    }
+
+    #competences { padding: 5rem 5rem; }
+    .comp-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+    }
+    .comp-card {
+      background: var(--panel); border: 1px solid var(--border);
+      padding: 2rem 1.8rem;
+      display: flex; flex-direction: column; gap: .9rem;
+      align-items: center; text-align: center;
+      position: relative; overflow: hidden;
+      transition: border-color .3s, box-shadow .3s, transform .3s;
+    }
+    .comp-card::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, var(--cyan), var(--magenta));
+      opacity: 0; transition: opacity .3s;
+    }
+    .comp-card:hover { border-color: rgba(0,245,255,0.3); box-shadow: var(--glow); transform: translateY(-3px); }
+    .comp-card:hover::before { opacity: 1; }
+    .comp-name {
+      font-family: 'Orbitron', sans-serif;
+      font-size: .9rem; font-weight: 700;
+      color: var(--cyan); letter-spacing: .06em; margin-bottom: .2rem;
+    }
+    .comp-desc { font-size: .93rem; line-height: 1.65; color: var(--text-dim); flex: 1; }
+    .comp-desc strong { color: var(--text); font-weight: 500; }
+    .comp-tags { display: flex; flex-wrap: wrap; gap: .45rem; margin-top: auto; justify-content: center; }
+    .ctag {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: .6rem; letter-spacing: .08em;
+      padding: .25rem .65rem; border: 1px solid; white-space: nowrap;
+    }
+    .ctag-projet  { color: var(--cyan);    border-color: rgba(0,245,255,0.3);  background: rgba(0,245,255,0.05); }
+    .ctag-cours   { color: var(--magenta); border-color: rgba(255,0,170,0.3);  background: rgba(255,0,170,0.05); }
+    .ctag-perso   { color: #f0c060;        border-color: rgba(240,192,96,0.3); background: rgba(240,192,96,0.05); }
+
+    /* ── CV ── */
+    #cv { padding: 5rem 5rem; }
+
+    .cv-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+    }
+    .cv-card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      position: relative; overflow: hidden;
+      transition: border-color .3s, box-shadow .3s, transform .3s;
+      display: flex; flex-direction: column;
+    }
+    .cv-card::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 2px;
+      opacity: 0; transition: opacity .3s;
+    }
+    .cv-card.cv-fr::before { background: linear-gradient(90deg, var(--cyan), var(--cyan-dim)); }
+    .cv-card.cv-en::before { background: linear-gradient(90deg, var(--magenta), #ff66cc); }
+    .cv-card:hover { border-color: rgba(0,245,255,0.35); box-shadow: var(--glow); transform: translateY(-3px); }
+    .cv-card.cv-en:hover { border-color: rgba(255,0,170,0.35); box-shadow: 0 0 20px rgba(255,0,170,0.3); }
+    .cv-card:hover::before { opacity: 1; }
+
+    .cv-lang-badge {
+      position: absolute; top: 1.2rem; right: 1.2rem;
+      font-family: 'Orbitron', sans-serif;
+      font-size: .65rem; font-weight: 700; letter-spacing: .15em;
+      padding: .3rem .8rem; border: 1px solid; z-index: 2;
+    }
+    .cv-fr .cv-lang-badge { color: var(--cyan); border-color: rgba(0,245,255,0.4); background: rgba(0,245,255,0.07); }
+    .cv-en .cv-lang-badge { color: var(--magenta); border-color: rgba(255,0,170,0.4); background: rgba(255,0,170,0.07); }
+
+    .cv-preview {
+      width: 100%;
+      aspect-ratio: 210 / 297;
+      background: #0a0e1a;
+      border-bottom: 1px solid var(--border);
+      position: relative; overflow: hidden;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .cv-preview img { width: 100%; height: 100%; object-fit: cover; object-position: top; display: block; }
+    .cv-preview-placeholder {
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: .8rem; color: var(--text-dim);
+      font-family: 'Share Tech Mono', monospace;
+      font-size: .7rem; letter-spacing: .12em;
+      text-align: center; padding: 2rem;
+    }
+    .cv-preview-placeholder svg { opacity: .2; }
+    .cv-preview-scanline {
+      position: absolute; inset: 0; pointer-events: none;
+      background: repeating-linear-gradient(
+        0deg, transparent, transparent 3px,
+        rgba(0,245,255,0.015) 3px, rgba(0,245,255,0.015) 4px
+      );
+    }
+    .cv-info { padding: 1.5rem; display: flex; flex-direction: column; gap: 1rem; flex: 1; }
+    .cv-title {
+      font-family: 'Orbitron', sans-serif;
+      font-size: .9rem; font-weight: 700; letter-spacing: .06em; color: #fff;
+    }
+    .cv-meta {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: .65rem; letter-spacing: .12em; color: var(--text-dim);
+    }
+    .cv-actions { display: flex; gap: .8rem; flex-wrap: wrap; margin-top: auto; }
+    .cv-btn {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: .7rem; letter-spacing: .12em; text-transform: uppercase;
+      padding: .7rem 1.3rem; text-decoration: none;
+      position: relative; overflow: hidden;
+      cursor: none; transition: color .3s;
+      border: 1px solid; flex: 1; text-align: center;
+    }
+    .cv-btn::before {
+      content: ''; position: absolute; inset: 0;
+      transform: translateX(-100%);
+      transition: transform .3s cubic-bezier(.4,0,.2,1); z-index: -1;
+    }
+    .cv-btn:hover { color: var(--bg); }
+    .cv-btn:hover::before { transform: translateX(0); }
+    .cv-fr .cv-btn-primary { color: var(--cyan); border-color: var(--cyan); }
+    .cv-fr .cv-btn-primary::before { background: var(--cyan); }
+    .cv-fr .cv-btn-secondary { color: var(--text-dim); border-color: var(--text-dim); }
+    .cv-fr .cv-btn-secondary::before { background: var(--text-dim); }
+    .cv-en .cv-btn-primary { color: var(--magenta); border-color: var(--magenta); }
+    .cv-en .cv-btn-primary::before { background: var(--magenta); }
+    .cv-en .cv-btn-secondary { color: var(--text-dim); border-color: var(--text-dim); }
+    .cv-en .cv-btn-secondary::before { background: var(--text-dim); }
+
+    /* Lightbox */
+    .cv-lightbox {
+      position: fixed; inset: 0; z-index: 200;
+      background: rgba(5,8,16,0.95);
+      display: none; align-items: center; justify-content: center;
+      backdrop-filter: blur(8px);
+    }
+    .cv-lightbox.open { display: flex; }
+    .cv-lightbox-inner { position: relative; max-width: 700px; width: 90%; max-height: 90vh; }
+    .cv-lightbox-inner iframe { width: 100%; height: 85vh; border: 1px solid var(--border); }
+    .cv-lightbox-close {
+      position: absolute; top: -2.5rem; right: 0;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: .75rem; letter-spacing: .2em;
+      color: var(--text-dim); cursor: none;
+      background: none; border: none; transition: color .2s;
+    }
+    .cv-lightbox-close:hover { color: var(--cyan); }
+
+    @media (max-width: 750px) {
+      #cv { padding: 4rem 2rem; }
+      .cv-grid { grid-template-columns: 1fr; }
+    }
+
+    .divider {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--cyan), transparent);
+      opacity: .2; margin: 0 5rem;
+      position: relative; z-index: 2;
+    }
+
+    #cta {
+      padding: 6rem 5rem; text-align: center;
+      position: relative; z-index: 2;
+    }
+    #cta p {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: .75rem; letter-spacing: .25em;
+      color: var(--text-dim); margin-bottom: 1rem;
+    }
+    #cta h3 {
+      font-family: 'Orbitron', sans-serif;
+      font-size: clamp(1.5rem, 3vw, 2.5rem);
+      font-weight: 700; color: #fff; margin-bottom: 2rem;
+    }
+    #cta h3 span { color: var(--cyan); }
+
+    footer {
+      position: relative; z-index: 2;
+      border-top: 1px solid var(--border);
+      padding: 2rem 5rem;
+      display: flex; justify-content: space-between; align-items: center;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: .65rem; letter-spacing: .15em; color: var(--text-dim);
+    }
+    footer span { color: var(--cyan); }
+
+    @keyframes fadeInLeft {
+      from { opacity: 0; transform: translateX(-30px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+    @keyframes fadeInRight {
+      from { opacity: 0; transform: translateX(30px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+    @keyframes borderPulse {
+      0%, 100% { opacity: .3; }
+      50%       { opacity: .8; }
+    }
+    @keyframes glitch {
+      0%   { clip-path: inset(0 0 95% 0); transform: translateX(-4px); }
+      20%  { clip-path: inset(40% 0 50% 0); transform: translateX(4px); }
+      40%  { clip-path: inset(80% 0 5% 0); transform: translateX(-2px); }
+      60%  { clip-path: inset(20% 0 70% 0); transform: translateX(2px); }
+      80%  { clip-path: inset(60% 0 30% 0); transform: translateX(-4px); }
+      100% { clip-path: inset(0 0 95% 0); transform: translateX(0); }
+    }
+    .glitch-wrap { position: relative; display: inline-block; }
+    .glitch-wrap::before, .glitch-wrap::after {
+      content: attr(data-text); position: absolute; top: 0; left: 0;
+      font-family: 'Orbitron', sans-serif;
+      font-size: inherit; font-weight: 900; line-height: inherit;
+    }
+    .glitch-wrap::before { color: var(--magenta); left: 2px; animation: glitch 4s infinite step-end; opacity: .5; }
+    .glitch-wrap::after  { color: var(--cyan); left: -2px; animation: glitch 4s infinite step-end .2s; opacity: .4; }
+
+    @media (max-width: 900px) {
+      #hero { grid-template-columns: 1fr; padding: 7rem 2rem 3rem; gap: 3rem; }
+      .hero-visual { display: none; }
+      #about { padding: 4rem 2rem; }
+      .about-grid { grid-template-columns: 1fr; gap: 2rem; }
+      nav { padding: 1rem 1.5rem; }
+      nav ul { gap: 1.5rem; }
+      footer { flex-direction: column; gap: .5rem; text-align: center; }
+      #cta, .divider { padding-left: 2rem; padding-right: 2rem; margin-left: 0; margin-right: 0; }
+      .comp-grid { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 600px) {
+      .comp-grid { grid-template-columns: 1fr; }
+      #competences { padding: 3rem 1.5rem; }
+    }
+  </style>
 </head>
 <body>
-    <h1>Super Page Bidon !</h1>
-    <p>Ceci est un paragraphe bidon pour tester.</p>
+
+  <div class="cursor" id="cursor"></div>
+  <div class="cursor-dot" id="cursorDot"></div>
+
+  <nav>
+    <div class="nav-logo">PORTFOLIO</div>
     <ul>
-        <li>Élément 1 bidon</li>
-        <li>Élément 2 bidon</li>
-        <li>Élément 3 bidon</li>
+      <li><a href="#about">À propos</a></li>
+      <li><a href="parcours.html">Parcours</a></li>
+      <li><a href="/cdn-cgi/l/email-protection#03776c6d43666e626a6f2d6571">Contact</a></li>
     </ul>
+  </nav>
+
+  <section id="hero">
+    <div class="hero-text">
+      <div class="hero-tag">Bienvenue sur mon portfolio</div>
+      <h1>
+        <span class="glitch-wrap" data-text="Chloé Charon">Chloé Charon</span>
+        <span class="accent">Étudiante<span class="accent2">_</span></span>
+      </h1>
+      <p class="hero-subtitle">
+        Passionnée par la cyber, les systèmes et la tech.<br>
+        En formation vers un avenir dans la cybersécurité et la cyberdéfense.
+      </p>
+      <div class="hero-cta">
+        <a href="parcours.html" class="btn">Voir mon parcours</a>
+        <a href="/cdn-cgi/l/email-protection#80f4efeec0e5ede1e9ecaee6f2" class="btn btn-ghost">Me contacter</a>
+      </div>
+    </div>
+
+    <div class="hero-visual">
+      <div class="hero-img-wrap">
+        <div class="hero-img-placeholder">
+          <div class="corner corner-tl"></div>
+          <div class="corner corner-tr"></div>
+          <div class="corner corner-bl"></div>
+          <div class="corner corner-br"></div>
+          <div class="scanline-img"></div>
+          <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+            <circle cx="12" cy="7" r="4"/>
+          </svg>
+          <span>// TA PHOTO ICI</span>
+        </div>
+        <div class="hero-badge">DISPONIBLE // 2026</div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <section id="about">
+    <div class="section-header">
+      <span class="section-num">01 //</span>
+      <h2>À propos de moi</h2>
+      <div class="section-line"></div>
+    </div>
+
+    <div class="about-grid">
+      <div class="about-stats">
+        <div class="stat-card" data-label="Localisation">
+          <div class="stat-value">FR</div>
+          <div class="stat-desc">France — Strasbourg</div>
+        </div>
+        <div class="stat-card" data-label="Statut">
+          <div class="stat-value">Étudiante</div>
+          <div class="stat-desc">En formation / IUT DE COLMAR</div>
+        </div>
+        <div class="stat-card" data-label="Objectif">
+          <div class="stat-value">Pen-Testeuse</div>
+          <div class="stat-desc">Cybersécurité</div>
+        </div>
+      </div>
+
+      <div class="about-text">
+        <p>
+          Je m'appelle <strong>Chloé Charon</strong>, étudiante en première année de réseaux et télécommunications à l'IUT de Colmar. Ce portfolio a pour but de retracer mon parcours, mes compétences techniques et les projets concrets que j'ai réalisés au cours de cette année.
+        </p>
+        <p>
+          Mon projet professionnel s'oriente vers le domaine de l'informatique, avec une passion particulière pour <strong>la cybersécurité</strong>. À terme, je souhaite devenir pen testeuse, un métier qui regroupe analyse technique, organisation et créativité pour identifier les vulnérabilités des systèmes et renforcer leur sécurité.
+        </p>
+        <p>
+          <strong>Au sommaire :</strong><br><br>
+          <strong>Formation :</strong> Projets réalisés en cours, travaux pratiques et certifications<br>
+          <strong>Soft skills :</strong> Présentation de mes acquis moraux / soft skills<br>
+          <br>
+          Ce portfolio évoluera régulièrement pour refléter mes progrès et mes nouvelles aspirations. N'hésitez pas à explorer les documents joints pour mieux comprendre mes démarches et ma motivation !
+        </p>
+
+        <div class="skills-list">
+          <span class="skill-tag">HTML/CSS</span>
+          <span class="skill-tag">Python</span>
+          <span class="skill-tag">Linux</span>
+          <span class="skill-tag">Windows</span>
+          <span class="skill-tag">Git</span>
+          <span class="skill-tag">Arduino</span>
+          <span class="skill-tag">Réseau</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <section id="competences">
+    <div class="section-header">
+      <span class="section-num">02 //</span>
+      <h2>Compétences techniques</h2>
+      <div class="section-line"></div>
+    </div>
+    <div class="comp-grid">
+
+      <div class="comp-card">
+        <div class="comp-name">HTML / CSS</div>
+        <p class="comp-desc">Création de pages structurées et stylisées. Maîtrise des <strong>layouts flexbox et grid</strong>, animations CSS, et design responsive. Utilisé pour construire ce portfolio.</p>
+        <div class="comp-tags">
+          <span class="ctag ctag-projet">Utilisé en projet</span>
+          <span class="ctag ctag-perso">Projet perso</span>
+        </div>
+      </div>
+
+      <div class="comp-card">
+        <div class="comp-name">Python</div>
+        <p class="comp-desc">Scripting, automatisation et traitement de données. Utilisation de bibliothèques comme <strong>os, socket, sqlite3</strong>. Exercices algorithmiques et petits outils CLI.</p>
+        <div class="comp-tags">
+          <span class="ctag ctag-cours">En cours</span>
+          <span class="ctag ctag-projet">Utilisé en projet</span>
+        </div>
+      </div>
+
+      <div class="comp-card">
+        <div class="comp-name">Arduino</div>
+        <p class="comp-desc">Programmation embarquée en C/C++. Capteurs, actionneurs, communication série. Réalisation de <strong>montages électroniques</strong> simples avec retour d'état sur interface.</p>
+        <div class="comp-tags">
+          <span class="ctag ctag-cours">En cours</span>
+          <span class="ctag ctag-perso">Projet perso</span>
+        </div>
+      </div>
+
+      <div class="comp-card">
+        <div class="comp-name">Réseaux TCP/IP</div>
+        <p class="comp-desc">Compréhension des couches OSI/TCP-IP, adressage IPv4/IPv6, routage statique et dynamique (<strong>OSPF, RIP</strong>). Configuration de VLANs, NAT et ACL.</p>
+        <div class="comp-tags">
+          <span class="ctag ctag-cours">En cours</span>
+          <span class="ctag ctag-projet">Utilisé en projet</span>
+        </div>
+      </div>
+
+      <div class="comp-card">
+        <div class="comp-name">Linux</div>
+        <p class="comp-desc">Administration en ligne de commande, gestion des droits, <strong>scripts bash</strong>, services systemd. Environnements Debian/Ubuntu utilisés en TP et en perso.</p>
+        <div class="comp-tags">
+          <span class="ctag ctag-cours">En cours</span>
+          <span class="ctag ctag-perso">Usage quotidien</span>
+        </div>
+      </div>
+
+      <div class="comp-card">
+        <div class="comp-name">Virtualisation</div>
+        <p class="comp-desc">Création et gestion de VMs avec <strong>VirtualBox / VMware</strong>. Mise en réseau de machines virtuelles, snapshots, et configuration d'environnements isolés pour les TP.</p>
+        <div class="comp-tags">
+          <span class="ctag ctag-cours">En cours</span>
+        </div>
+      </div>
+
+      <div class="comp-card">
+        <div class="comp-name">GNS3</div>
+        <p class="comp-desc">Simulation de topologies réseau complexes. Intégration de routeurs <strong>Cisco IOS</strong>, switches, et VMs Linux dans un même environnement de lab.</p>
+        <div class="comp-tags">
+          <span class="ctag ctag-cours">En cours</span>
+          <span class="ctag ctag-projet">Utilisé en projet</span>
+        </div>
+      </div>
+
+      <div class="comp-card">
+        <div class="comp-name">Packet Tracer</div>
+        <p class="comp-desc">Simulation Cisco pour la configuration de <strong>routeurs, switches et protocoles</strong> réseau. Utilisé intensivement en TP pour la préparation aux certifications.</p>
+        <div class="comp-tags">
+          <span class="ctag ctag-cours">En cours</span>
+          <span class="ctag ctag-projet">Utilisé en projet</span>
+        </div>
+      </div>
+
+      <div class="comp-card">
+        <div class="comp-name">PyCharm</div>
+        <p class="comp-desc">IDE principal pour le développement Python. Maîtrise du <strong>débogueur, de l'interpréteur intégré</strong> et des outils de refactoring. Gestion de projets avec venv.</p>
+        <div class="comp-tags">
+          <span class="ctag ctag-perso">Usage quotidien</span>
+          <span class="ctag ctag-cours">En cours</span>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- CV -->
+  <section id="cv">
+    <div class="section-header">
+      <span class="section-num">03 //</span>
+      <h2>Curriculum Vitæ</h2>
+      <div class="section-line"></div>
+    </div>
+
+    <div class="cv-grid">
+
+      <!-- CV FRANÇAIS -->
+      <div class="cv-card cv-fr">
+        <div class="cv-lang-badge">FR</div>
+
+        <!-- Preview : remplace le placeholder par une <img src="assets/cv-fr-preview.png"> quand tu auras ton image -->
+        <div class="cv-preview">
+          <div class="cv-preview-scanline"></div>
+          <!-- <img src="assets/cv-fr-preview.png" alt="Aperçu CV Français"> -->
+          <div class="cv-preview-placeholder">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+              <polyline points="14 2 14 8 20 8"/>
+              <line x1="16" y1="13" x2="8" y2="13"/>
+              <line x1="16" y1="17" x2="8" y2="17"/>
+              <polyline points="10 9 9 9 8 9"/>
+            </svg>
+            <span>// APERÇU CV FR</span>
+            <span style="color:var(--text-dim);font-size:.6rem;">Remplace par ton image PNG</span>
+          </div>
+        </div>
+
+        <div class="cv-info">
+          <div class="cv-title">CV — Version Française</div>
+          <div class="cv-meta">// Chloé Charon — BUT R&amp;T Cybersécurité — IUT Colmar</div>
+          <div class="cv-actions">
+            <a href="#" class="cv-btn cv-btn-primary" onclick="openLightbox('assets/cv-fr.pdf'); return false;">Aperçu</a>
+            <!-- Remplace le href par le chemin réel de ton PDF : assets/cv-fr.pdf -->
+            <a href="assets/cv-fr.pdf" class="cv-btn cv-btn-secondary" download>Télécharger</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- CV ANGLAIS -->
+      <div class="cv-card cv-en">
+        <div class="cv-lang-badge">EN</div>
+
+        <!-- Preview : remplace le placeholder par une <img src="assets/cv-en-preview.png"> quand tu auras ton image -->
+        <div class="cv-preview">
+          <div class="cv-preview-scanline"></div>
+          <!-- <img src="assets/cv-en-preview.png" alt="CV English Preview"> -->
+          <div class="cv-preview-placeholder">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+              <polyline points="14 2 14 8 20 8"/>
+              <line x1="16" y1="13" x2="8" y2="13"/>
+              <line x1="16" y1="17" x2="8" y2="17"/>
+              <polyline points="10 9 9 9 8 9"/>
+            </svg>
+            <span>// CV PREVIEW EN</span>
+            <span style="color:var(--text-dim);font-size:.6rem;">Replace with your PNG export</span>
+          </div>
+        </div>
+
+        <div class="cv-info">
+          <div class="cv-title">Resume — English Version</div>
+          <div class="cv-meta">// Chloé Charon — B.U.T. Networks &amp; Cybersecurity — IUT Colmar</div>
+          <div class="cv-actions">
+            <a href="#" class="cv-btn cv-btn-primary" onclick="openLightbox('assets/cv-en.pdf'); return false;">Preview</a>
+            <!-- Remplace le href par le chemin réel de ton PDF : assets/cv-en.pdf -->
+            <a href="assets/cv-en.pdf" class="cv-btn cv-btn-secondary" download>Download</a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- LIGHTBOX PDF -->
+  <div class="cv-lightbox" id="cvLightbox">
+    <div class="cv-lightbox-inner">
+      <button class="cv-lightbox-close" onclick="closeLightbox()">[ FERMER × ]</button>
+      <iframe id="cvLightboxFrame" src="" title="CV Preview"></iframe>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <section id="cta">
+    <p>// PROCHAINE ÉTAPE</p>
+    <h3>Curieux de mon <span>parcours</span> ?</h3>
+    <a href="parcours.html" class="btn">Explorer ma formation →</a>
+  </section>
+
+<!-- FOOTER -->
+  <footer>
+    <span>© 2025 — Chloé Charon</span>
+    <span style="color:var(--text-dim);">Construit avec du code + du café et énormément de temps</span>
+    <span>v1.0.0</span>
+  </footer>
+
+  <script>
+    // Curseur custom
+    const cursor = document.getElementById('cursor');
+    const dot = document.getElementById('cursorDot');
+    document.addEventListener('mousemove', e => {
+      cursor.style.left = e.clientX + 'px';
+      cursor.style.top  = e.clientY + 'px';
+      dot.style.left    = e.clientX + 'px';
+      dot.style.top     = e.clientY + 'px';
+    });
+
+    // Glitch aléatoire sur le h1
+    const glitch = document.querySelector('.glitch-wrap');
+    setInterval(() => {
+      glitch.style.animation = 'none';
+      setTimeout(() => glitch.style.animation = '', 50);
+    }, 5000);
+  </script>
 </body>
 </html>
