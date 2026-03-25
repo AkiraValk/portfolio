@@ -468,6 +468,35 @@
       .comp-col:last-child { border-bottom: none; }
       .back-section { flex-direction: column; }
     }
+
+    .but1-subnav {
+      position: sticky; top: 65px; z-index: 90;
+      display: flex; gap: 0;
+      background: rgba(5,8,16,0.9);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 5rem;
+      }
+    .subnav-item {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: .7rem; letter-spacing: .15em; text-transform: uppercase;
+      color: var(--text-dim); text-decoration: none;
+      padding: 1rem 1.5rem;
+      display: flex; align-items: center; gap: .6rem;
+      border-bottom: 2px solid transparent;
+      transition: color .3s, border-color .3s;
+      position: relative;
+    }
+    .subnav-item:hover { color: var(--cyan); }
+    .subnav-item.active { color: var(--cyan); border-bottom-color: var(--cyan); }
+    .subnav-num {
+      font-family: 'Orbitron', sans-serif;
+      font-size: .75rem; font-weight: 700;
+      color: inherit;
+    }
+    .subnav-label { color: inherit; }
+
+    
   </style>
 </head>
 <body>
@@ -484,7 +513,23 @@
       <li><a href="/cdn-cgi/l/email-protection#99faf1f5f6fcd9faf1f8ebf6f7b7f6ebfe">Contact</a></li>
     </ul>
   </nav>
+  
+  <div class="but1-subnav">
+    <a href="#c3" class="subnav-item active" data-target="c3">
+      <span class="subnav-num">C3</span>
+      <span class="subnav-label">Programmer</span>
+    </a>
+    <a href="#c2" class="subnav-item" data-target="c2">
+      <span class="subnav-num">C2</span>
+      <span class="subnav-label">Connecter</span>
+    </a>
+    <a href="#c1" class="subnav-item" data-target="c1">
+      <span class="subnav-num">C1</span>
+      <span class="subnav-label">Administrer</span>
+    </a>
+  </div>
 
+  
   <!-- EN-TÊTE -->
   <div class="page-header">
     <div class="tag">// 1ère Année — BUT R&T</div>
@@ -500,7 +545,7 @@
     <div class="section-label" style="margin-top: 0;">COMPÉTENCE 3 — PROGRAMMER</div>
 
     <div class="competence-block">
-      <div class="comp-header">
+      <div id="c3" class="comp-header">
         <div class="comp-number">C3</div>
         <div class="comp-header-text">
           <div class="comp-meta">Créer des outils et applications informatiques pour les R&T</div>
@@ -682,8 +727,8 @@
          COMPÉTENCE 2 — CONNECTER
     ══════════════════════════════════════════ -->
     <div class="section-label">COMPÉTENCE 2 — CONNECTER</div>
-
-    <div class="competence-block">
+  
+    <div id="c2" class="competence-block">
       <div class="comp-header">
         <div class="comp-number">C2</div>
         <div class="comp-header-text">
@@ -858,7 +903,7 @@
     ══════════════════════════════════════════ -->
     <div class="section-label">COMPÉTENCE 1 — ADMINISTRER</div>
 
-    <div class="competence-block">
+    <div id="c1" class="competence-block">
       <div class="comp-header">
         <div class="comp-number">C1</div>
         <div class="comp-header-text">
@@ -1059,3 +1104,14 @@
     document.addEventListener('mousemove', e => {
       cursor.style.left = e.clientX + 'px';
       cursor.style.to
+    const sections = { c3: document.getElementById('c3'), c2: document.getElementById('c2'), c1: document.getElementById('c1') };
+const subnavItems = document.querySelectorAll('.subnav-item');
+window.addEventListener('scroll', () => {
+  let current = 'c3';
+  for (const [id, el] of Object.entries(sections)) {
+    if (el && el.getBoundingClientRect().top < 150) current = id;
+  }
+  subnavItems.forEach(item => {
+    item.classList.toggle('active', item.dataset.target === current);
+  });
+});
