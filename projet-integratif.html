@@ -347,6 +347,11 @@
       .proj-subnav { padding: 0 1.5rem; }
       .back-section { flex-direction: column; }
     }
+
+    .img-small img {
+      max-height: 300px;
+      object-fit: contain;
+    }
   </style>
 </head>
 <body>
@@ -484,7 +489,7 @@
     <!-- IMAGE 3 — Contenu des tables -->
     <div class="img-block">
       <div class="img-label">Contenu des tables de la base de données Maison</div>
-       <div class="img-wrap">
+       <div class="img-wrap img-small">
         <div class="img-wrap-scanline">
       </div><img src="assets/Images_PI/Contenu_TMDB.png" alt="Schéma infrastructure téléphonique"></div>
     </div>
@@ -492,7 +497,7 @@
     <!-- IMAGE 4 — Tables MariaDB -->
     <div class="img-block">
       <div class="img-label">Tables dans la base de données Maison sur MariaDB</div>
-       <div class="img-wrap">
+       <div class="img-wrap img-small">
         <div class="img-wrap-scanline">
       </div><img src="assets/Images_PI/MariaDBTables.png" alt="Schéma infrastructure téléphonique"></div>
     </div>
