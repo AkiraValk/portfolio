@@ -513,6 +513,74 @@
       .comp-grid { grid-template-columns: 1fr; }
       #competences { padding: 3rem 1.5rem; }
     }
+
+       /* ── SOFT SKILLS ── */
+    #softskills { padding: 5rem 5rem; }
+
+    .soft-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+    }
+    .soft-card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      padding: 2rem;
+      position: relative; overflow: hidden;
+      transition: border-color .3s, box-shadow .3s, transform .3s;
+      display: flex; flex-direction: column; gap: 1.2rem;
+    }
+    .soft-card::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 2px;
+      opacity: 0; transition: opacity .3s;
+    }
+    .soft-card:nth-child(1)::before { background: linear-gradient(90deg, var(--cyan), var(--cyan-dim)); }
+    .soft-card:nth-child(2)::before { background: linear-gradient(90deg, var(--magenta), #ff66cc); }
+    .soft-card:nth-child(3)::before { background: linear-gradient(90deg, var(--green), #00ccaa); }
+    .soft-card:hover { border-color: rgba(0,245,255,0.3); box-shadow: var(--glow); transform: translateY(-3px); }
+    .soft-card:hover::before { opacity: 1; }
+
+    .soft-card-header {
+      display: flex; align-items: center; gap: 1rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .soft-icon {
+      width: 40px; height: 40px; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.2rem;
+      border: 1px solid var(--border);
+      background: rgba(0,245,255,0.04);
+    }
+    .soft-name {
+      font-family: 'Orbitron', sans-serif;
+      font-size: .85rem; font-weight: 700;
+      letter-spacing: .08em;
+    }
+    .soft-card:nth-child(1) .soft-name { color: var(--cyan); }
+    .soft-card:nth-child(2) .soft-name { color: var(--magenta); }
+    .soft-card:nth-child(3) .soft-name { color: var(--green); }
+
+    .soft-items { list-style: none; display: flex; flex-direction: column; gap: .7rem; }
+    .soft-items li {
+      display: flex; align-items: flex-start; gap: .7rem;
+      font-size: .95rem; line-height: 1.5; color: var(--text-dim);
+    }
+    .soft-items li::before {
+      content: '//';
+      font-family: 'Share Tech Mono', monospace;
+      font-size: .6rem; letter-spacing: .05em;
+      flex-shrink: 0; margin-top: .2rem;
+    }
+    .soft-card:nth-child(1) .soft-items li::before { color: var(--cyan); }
+    .soft-card:nth-child(2) .soft-items li::before { color: var(--magenta); }
+    .soft-card:nth-child(3) .soft-items li::before { color: var(--green); }
+
+    @media (max-width: 900px) {
+      #softskills { padding: 4rem 2rem; }
+      .soft-grid { grid-template-columns: 1fr; }
+    }
   </style>
 </head>
 <body>
