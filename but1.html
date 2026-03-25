@@ -542,10 +542,10 @@
     <!-- ══════════════════════════════════════════
          COMPÉTENCE 3 — PROGRAMMER
     ══════════════════════════════════════════ -->
-    <div class="section-label" style="margin-top: 0;">COMPÉTENCE 3 — PROGRAMMER</div>
+    <div id="c3" class="section-label" style="margin-top: 0;">COMPÉTENCE 3 — PROGRAMMER</div>
 
     <div class="competence-block">
-      <div id="c3" class="comp-header">
+      <div class="comp-header">
         <div class="comp-number">C3</div>
         <div class="comp-header-text">
           <div class="comp-meta">Créer des outils et applications informatiques pour les R&T</div>
@@ -726,9 +726,9 @@
     <!-- ══════════════════════════════════════════
          COMPÉTENCE 2 — CONNECTER
     ══════════════════════════════════════════ -->
-    <div class="section-label">COMPÉTENCE 2 — CONNECTER</div>
+    <div  id="c2" class="section-label">COMPÉTENCE 2 — CONNECTER</div>
   
-    <div id="c2" class="competence-block">
+    <div class="competence-block">
       <div class="comp-header">
         <div class="comp-number">C2</div>
         <div class="comp-header-text">
@@ -901,9 +901,9 @@
     <!-- ══════════════════════════════════════════
          COMPÉTENCE 1 — ADMINISTRER
     ══════════════════════════════════════════ -->
-    <div class="section-label">COMPÉTENCE 1 — ADMINISTRER</div>
+    <div  id="c1" class="section-label">COMPÉTENCE 1 — ADMINISTRER</div>
 
-    <div id="c1" class="competence-block">
+    <div class="competence-block">
       <div class="comp-header">
         <div class="comp-number">C1</div>
         <div class="comp-header-text">
@@ -1097,21 +1097,27 @@
     <span style="color:var(--text-dim);">BUT 1 — Compétences</span>
     <span>v1.0.0</span>
   </footer>
-
-  <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+  
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
     const cursor = document.getElementById('cursor');
     const dot = document.getElementById('cursorDot');
     document.addEventListener('mousemove', e => {
       cursor.style.left = e.clientX + 'px';
-      cursor.style.to
+      cursor.style.top  = e.clientY + 'px';
+      dot.style.left    = e.clientX + 'px';
+      dot.style.top     = e.clientY + 'px';
+    });
+
+    // Subnav active au scroll
     const sections = { c3: document.getElementById('c3'), c2: document.getElementById('c2'), c1: document.getElementById('c1') };
-const subnavItems = document.querySelectorAll('.subnav-item');
-window.addEventListener('scroll', () => {
-  let current = 'c3';
-  for (const [id, el] of Object.entries(sections)) {
-    if (el && el.getBoundingClientRect().top < 150) current = id;
-  }
-  subnavItems.forEach(item => {
-    item.classList.toggle('active', item.dataset.target === current);
-  });
-});
+    const subnavItems = document.querySelectorAll('.subnav-item');
+    window.addEventListener('scroll', () => {
+      let current = 'c3';
+      for (const [id, el] of Object.entries(sections)) {
+        if (el && el.getBoundingClientRect().top < 150) current = id;
+      }
+      subnavItems.forEach(item => {
+        item.classList.toggle('active', item.dataset.target === current);
+      });
+    });
+</script>
