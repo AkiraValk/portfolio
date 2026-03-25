@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>BUT 2 — Chloé CHARON</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@300;500;700&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg:       #050810;
+      --bg2:      #0a0f1e;
+      --panel:    #0d1428;
+      --cyan:     #00f5ff;
+      --cyan-dim: #00b8bf;
+      --magenta:  #ff00aa;
+      --green:    #00ff88;
+      --yellow:   #f0c060;
+      --text:     #c8d8f0;
+      --text-dim: #5a7090;
+      --border:   rgba(0,245,255,0.15);
+      --glow:     0 0 20px rgba(0,245,255,0.3);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Rajdhani', sans-serif;
+      font-weight: 300;
+      font-size: 18px;
+      overflow-x: hidden;
+      cursor: none;
+    }
+
+    .cursor {
+      position: fixed; top: 0; left: 0; pointer-events: none; z-index: 9999;
+      width: 20px; height: 20px;
+      border: 1px solid var(--cyan); border-radius: 50%;
+      transform: translate(-50%, -50%);
+      transition: width .2s, height .2s, background .2s;
+      mix-blend-mode: screen;
+    }
+    .cursor-dot {
+      position: fixed; top: 0; left: 0; pointer-events: none; z-index: 9999;
+      width: 4px; height: 4px; background: var(--cyan); border-radius: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    body::before {
+      content: '';
+      position: fixed; inset: 0; z-index: 0;
+      background-image:
+        linear-gradient(rgba(0,245,255,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,245,255,0.03) 1px, transparent 1px);
+      background-size: 60px 60px; pointer-events: none;
+    }
+    body::after {
+      content: '';
+      position: fixed; inset: 0; z-index: 1; pointer-events: none;
+      background: repeating-linear-gradient(
+        0deg, transparent, transparent 2px,
+        rgba(0,0,0,0.08) 2px, rgba(0,0,0,0.08) 4px
+      );
+    }
+
+    /* NAV */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 1.2rem 3rem;
+      background: rgba(5,8,16,0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-logo {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1rem; font-weight: 700;
+      color: var(--cyan); letter-spacing: .2em;
+      text-shadow: var(--glow);
+      text-decoration: none;
+    }
+    nav ul { list-style: none; display: flex; gap: 2.5rem; }
+    nav a {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: .75rem; letter-spacing: .15em; text-transform: uppercase;
+      color: var(--text-dim); text-decoration: none;
+      position: relative; padding-bottom: 4px; transition: color .3s;
+    }
+    nav a::after {
+      content: ''; position: absolute; bottom: 0; left: 0; width: 0; height: 1px;
+      background: var(--cyan); transition: width .3s;
+    }
+    nav a:hover { color: var(--cyan); }
+    nav a:hover::after { width: 100%; }
+    nav a.active { color: var(--cyan); }
+    nav a.active::after { width: 100%; }
+
+    /* SUBNAV */
+    .but2-subnav {
+      position: sticky; top: 65px; z-index: 90;
+      display: flex; gap: 0;
+      background: rgba(5,8,16,0.9);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 5rem;
+    }
+    .subnav-item {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: .7rem; letter-spacing: .15em; text-transform: uppercase;
+      color: var(--text-dim); text-decoration: none;
+      padding: 1rem 1.5rem;
+      display: flex; align-items: center; gap: .6rem;
+      border-bottom: 2px solid transparent;
+      transition: color .3s, border-color .3s;
+    }
+    .subnav-item:hover { color: var(--cyan); }
+    .subnav-item.active { color: var(--cyan); border-bottom-color: var(--cyan); }
+    .subnav-num {
+      font-family: 'Orbitron', sans-serif;
+      font-size: .75rem; font-weight: 700; color: inherit;
+    }
+
+    /* PAGE HEADER */
+    .page-header {
+      position: relative; z-index: 2;
+      padding: 9rem 5rem 4rem;
+      border-bottom: 1px solid var(--border);
+      animation: fadeInDown .6s ease both;
+    }
+    .page-header .tag {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: .7rem; letter-spacing: .3em;
+      color: var(--magenta); text-transform: uppercase;
+      margin-bottom: .8rem;
+    }
+    .page-header h1 {
+      font-family: 'Orbitron', sans-serif;
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      font-weight: 900; color: #fff;
+      text-shadow: 0 0 40px rgba(0,245,255,0.15);
+    }
+    .page-header h1 span { color: var(--cyan); }
+    .page-header p {
+      margin-top: 1rem;
+      font-size: 1.05rem; color: var(--text-dim); max-width: 650px; line-height: 1.7;
+    }
+
+    /* CONTENU */
+    .content {
+      position: relative; z-index: 2;
+      max-width: 1100px; margin: 0 auto;
+      padding: 4rem 5rem;
+    }
+
+    .section-label {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: .65rem; letter-spacing: .3em; text-transform: uppercase;
+      color: var(--cyan); margin-bottom: 2.5rem;
+      display: flex; align-items: center; gap: 1rem;
+    }
+    .section-label::after {
+      content: ''; flex: 1; height: 1px;
+      background: linear-gradient(90deg, var(--border), transparent);
+    }
+
+    /* COMPÉTENCE BLOCK */
+    .competence-block {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      position: relative; overflow: hidden;
+      margin-bottom: 3rem;
+      animation: fadeInLeft .5s ease both;
+    }
+    .competence-block::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 3px;
+      background: linear-gradient(90deg, var(--cyan), var(--magenta));
+    }
+
+    .comp-header {
+      padding: 2rem 2rem 1.5rem;
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: flex-start; gap: 1.5rem;
+    }
+    .comp-number {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 2.5rem; font-weight: 900;
+      color: var(--cyan); opacity: .15;
+      line-height: 1; flex-shrink: 0;
+    }
+    .comp-header-text { flex: 1; }
+    .comp-meta {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: .65rem; letter-spacing: .2em;
+      color: var(--magenta); margin-bottom: .5rem;
+      text-transform: uppercase;
+    }
+    .comp-header h2 {
+      font-family: 'Orbitron', sans-serif;
+      font-size: clamp(1rem, 2.5vw, 1.4rem);
+      font-weight: 700; color: #fff; letter-spacing: .05em; line-height: 1.3;
+    }
+    .comp-desc-short {
+      margin-top: .8rem;
+      font-size: 1rem; color: var(--text-dim); line-height: 1.6;
+    }
+
+    .comp-body {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 0;
+    }
+    .comp-col {
+      padding: 2rem;
+      border-right: 1px solid var(--border);
+    }
+    .comp-col:last-child { border-right: none; }
+    .comp-col-title {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: .65rem; letter-spacing: .2em; text-transform: uppercase;
+      color: var(--cyan); margin-bottom: 1.2rem;
+      display: flex; align-items: center; gap: .6rem;
+    }
+    .comp-col-title::before { content: '//'; color: var(--magenta); }
+
+    .ce-list { list-style: none; display: flex; flex-direction: column; gap: .8rem; }
+    .ce-list li { display: flex; align-items: flex-start; gap: .8rem; }
+    .ce-code {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: .6rem; letter-spacing: .08em;
+      color: var(--cyan); background: rgba(0,245,255,0.07);
+      border: 1px solid rgba(0,245,255,0.2);
+      padding: .2rem .5rem; white-space: nowrap;
+      flex-shrink: 0; align-self: flex-start; margin-top: .1rem;
+    }
+    .ce-text { font-size: .95rem; line-height: 1.5; color: var(--text-dim); }
+
+    .ac-list { list-style: none; display: flex; flex-direction: column; gap: .8rem; }
+    .ac-list li { display: flex; align-items: flex-start; gap: .8rem; }
+    .ac-code {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: .6rem; letter-spacing: .08em;
+      color: var(--magenta); background: rgba(255,0,170,0.07);
+      border: 1px solid rgba(255,0,170,0.2);
+      padding: .2rem .5rem; white-space: nowrap;
+      flex-shrink: 0; align-self: flex-start; margin-top: .1rem;
+    }
+    .ac-text { font-size: .95rem; line-height: 1.5; color: var(--text-dim); }
+
+    .comp-situations {
+      padding: 1.5rem 2rem;
+      border-top: 1px solid var(--border);
+      display: flex; flex-wrap: wrap; gap: .6rem; align-items: center;
+    }
+    .sit-label {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: .6rem; letter-spacing: .15em; text-transform: uppercase;
+      color: var(--text-dim); margin-right: .4rem;
+    }
+    .sit-tag {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: .62rem; letter-spacing: .06em;
+      padding: .25rem .7rem;
+      border: 1px solid rgba(0,255,136,0.25);
+      color: var(--green); background: rgba(0,255,136,0.05);
+    }
+
+    /* BILAN */
+    .bilan-card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      padding: 2rem; margin-bottom: 3rem;
+      position: relative; overflow: hidden;
+      animation: fadeInLeft .5s ease both .1s;
+    }
+    .bilan-card::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, var(--green), var(--cyan));
+    }
+    .bilan-text { font-size: 1rem; line-height: 1.8; color: var(--text); }
+    .bilan-text strong { color: var(--cyan); font-weight: 500; }
+
+    /* Lien BUT1 */
+    .but1-link-card {
+      background: var(--panel);
+      border: 1px solid rgba(0,245,255,0.2);
+      padding: 1.8rem 2rem;
+      margin-bottom: 3rem;
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 2rem; flex-wrap: wrap;
+      position: relative; overflow: hidden;
+    }
+    .but1-link-card::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, var(--cyan), var(--magenta));
+    }
+    .but1-link-text h4 {
+      font-family: 'Orbitron', sans-serif;
+      font-size: .9rem; font-weight: 700; color: #fff;
+      letter-spacing: .06em; margin-bottom: .4rem;
+    }
+    .but1-link-text p {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: .65rem; letter-spacing: .1em; color: var(--text-dim);
+    }
+    .but1-btn {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: .72rem; letter-spacing: .15em; text-transform: uppercase;
+      padding: .8rem 1.8rem;
+      border: 1px solid var(--cyan); color: var(--cyan);
+      background: transparent; text-decoration: none;
+      position: relative; overflow: hidden; cursor: none;
+      transition: color .3s; white-space: nowrap; flex-shrink: 0;
+      display: flex; align-items: center; gap: .5rem;
+    }
+    .but1-btn::before {
+      content: ''; position: absolute; inset: 0; background: var(--cyan);
+      transform: translateX(-100%);
+      transition: transform .3s cubic-bezier(.4,0,.2,1); z-index: -1;
+    }
+    .but1-btn:hover { color: var(--bg); }
+    .but1-btn:hover::before { transform: translateX(0); }
+
+    /* PROJETS */
+    .projets-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.5rem; margin-bottom: 3rem;
+    }
+    .projet-card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      padding: 1.8rem;
+      position: relative; overflow: hidden;
+      display: flex; flex-direction: column; gap: 1rem;
+      transition: border-color .3s, box-shadow .3s, transform .3s;
+      animation: fadeInLeft .5s ease both;
+      text-decoration: none;
+    }
+    .projet-card::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, var(--cyan), var(--magenta));
+      opacity: 0; transition: opacity .3s;
+    }
+    .projet-card:hover { border-color: rgba(0,245,255,0.35); box-shadow: var(--glow); transform: translateY(-3px); }
+    .projet-card:hover::before { opacity: 1; }
+    .projet-tag {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: .6rem; letter-spacing: .15em; text-transform: uppercase;
+      color: var(--cyan); background: rgba(0,245,255,0.07);
+      border: 1px solid rgba(0,245,255,0.2);
+      padding: .2rem .6rem; align-self: flex-start;
+    }
+    .projet-title {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1rem; font-weight: 700;
+      color: #fff; letter-spacing: .05em; line-height: 1.3;
+    }
+    .projet-desc { font-size: .95rem; line-height: 1.65; color: var(--text-dim); flex: 1; }
+    .projet-desc strong { color: var(--text); font-weight: 500; }
+    .projet-footer {
+      display: flex; align-items: center; justify-content: space-between;
+      padding-top: 1rem; border-top: 1px solid var(--border); margin-top: auto;
+    }
+    .projet-techs { display: flex; gap: .4rem; flex-wrap: wrap; }
+    .tech-pill {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: .58rem; letter-spacing: .08em;
+      padding: .2rem .5rem;
+      border: 1px solid rgba(240,192,96,0.3);
+      color: var(--yellow); background: rgba(240,192,96,0.05);
+    }
+    .projet-link {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: .65rem; letter-spacing: .12em; text-transform: uppercase;
+      color: var(--cyan); text-decoration: none;
+      display: flex; align-items: center; gap: .4rem;
+      transition: color .2s; white-space: nowrap;
+    }
+    .projet-link:hover { color: #fff; }
+
+    /* PLACEHOLDER PROJETS */
+    .projets-placeholder {
+      background: var(--panel);
+      border: 1px dashed rgba(0,245,255,0.15);
+      padding: 3rem 2rem;
+      text-align: center;
+      margin-bottom: 3rem;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: .7rem; letter-spacing: .15em;
+      color: var(--text-dim);
+      display: flex; flex-direction: column; align-items: center; gap: .8rem;
+    }
+    .projets-placeholder span { color: var(--cyan); font-size: .8rem; }
+
+    /* BACK */
+    .back-section {
+      position: relative; z-index: 2;
+      padding: 3rem 5rem 5rem;
+      border-top: 1px solid var(--border);
+      display: flex; justify-content: space-between; align-items: center;
+      flex-wrap: wrap; gap: 1rem;
+    }
+    .btn {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: .8rem; letter-spacing: .15em; text-transform: uppercase;
+      padding: .9rem 2rem;
+      border: 1px solid var(--cyan); color: var(--cyan);
+      background: transparent; text-decoration: none;
+      position: relative; overflow: hidden; cursor: none; transition: color .3s;
+    }
+    .btn::before {
+      content: ''; position: absolute; inset: 0; background: var(--cyan);
+      transform: translateX(-100%);
+      transition: transform .3s cubic-bezier(.4,0,.2,1); z-index: -1;
+    }
+    .btn:hover { color: var(--bg); }
+    .btn:hover::before { transform: translateX(0); }
+
+    footer {
+      position: relative; z-index: 2;
+      border-top: 1px solid var(--border);
+      padding: 1.5rem 5rem;
+      display: flex; justify-content: space-between; align-items: center;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: .65rem; letter-spacing: .15em; color: var(--text-dim);
+    }
+    footer span { color: var(--cyan); }
+
+    .divider {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--cyan), transparent);
+      opacity: .15; margin: 0 5rem;
+      position: relative; z-index: 2;
+    }
+
+    @keyframes fadeInDown {
+      from { opacity: 0; transform: translateY(-20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeInLeft {
+      from { opacity: 0; transform: translateX(-20px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+
+    @media (max-width: 900px) {
+      nav { padding: 1rem 1.5rem; }
+      nav ul { gap: 1.2rem; }
+      .page-header, .content, .back-section, footer { padding-left: 1.5rem; padding-right: 1.5rem; }
+      .but2-subnav { padding: 0 1.5rem; }
+      .divider { margin: 0 1.5rem; }
+      .comp-body { grid-template-columns: 1fr; }
+      .comp-col { border-right: none; border-bottom: 1px solid var(--border); }
+      .comp-col:last-child { border-bottom: none; }
+      .back-section { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="cursor" id="cursor"></div>
+  <div class="cursor-dot" id="cursorDot"></div>
+
+  <nav>
+    <a href="index.html" class="nav-logo">PORTFOLIO</a>
+    <ul>
+      <li><a href="index.html#about">À propos</a></li>
+      <li><a href="parcours.html">Parcours</a></li>
+      <li><a href="but1.html">BUT 1</a></li>
+      <li><a href="but2.html" class="active">BUT 2</a></li>
+      <li><a href="mailto:chloe@charon.org">Contact</a></li>
+    </ul>
+  </nav>
+
+  <!-- SUBNAV -->
+  <div class="but2-subnav">
+    <a href="#c4" class="subnav-item active" data-target="c4">
+      <span class="subnav-num">C4</span>
+      <span class="subnav-label">Sécuriser</span>
+    </a>
+    <a href="#c5" class="subnav-item" data-target="c5">
+      <span class="subnav-num">C5</span>
+      <span class="subnav-label">Surveiller</span>
+    </a>
+    <a href="#but1-link" class="subnav-item" data-target="but1-link">
+      <span class="subnav-num">↗</span>
+      <span class="subnav-label">BUT 1</span>
+    </a>
+  </div>
+
+  <!-- EN-TÊTE -->
+  <div class="page-header">
+    <div class="tag">// 2ème Année — BUT R&T</div>
+    <h1>BUT <span>2</span> — Compétences</h1>
+    <p>Validation des compétences de deuxième année de BUT Réseaux & Télécommunications, parcours Cybersécurité — IUT de Colmar.</p>
+  </div>
+
+  <div class="content">
+
+    <!-- ══════════════════════════════════════════
+         COMPÉTENCE 4 — SÉCURISER
+    ══════════════════════════════════════════ -->
+    <div id="c4" class="section-label" style="margin-top: 0;">COMPÉTENCE 4 — SÉCURISER</div>
+
+    <div class="competence-block">
+      <div class="comp-header">
+        <div class="comp-number">C4</div>
+        <div class="comp-header-text">
+          <div class="comp-meta">Administrer un système d'information sécurisé</div>
+          <h2>Sécuriser — Mettre en œuvre, administrer et superviser les composants d'un système d'information</h2>
+          <p class="comp-desc-short">Garantir la sécurité, la confidentialité, l'intégrité et la disponibilité des données et des services. Prendre en compte les exigences de sécurité dès la conception, assurer la conformité aux normes et au cadre juridique, et maintenir un équilibre entre protection et facilité d'utilisation.</p>
+        </div>
+      </div>
+
+      <div class="comp-body">
+
+        <div class="comp-col">
+          <div class="comp-col-title">Composantes essentielles</div>
+          <ul class="ce-list">
+            <li>
+              <span class="ce-code">CE4.01</span>
+              <span class="ce-text">En visant un juste compromis entre exigences de sécurité et contraintes d'utilisation</span>
+            </li>
+            <li>
+              <span class="ce-code">CE4.02</span>
+              <span class="ce-text">En respectant les normes et le cadre juridique</span>
+            </li>
+            <li>
+              <span class="ce-code">CE4.03</span>
+              <span class="ce-text">En intégrant les dernières technologies</span>
+            </li>
+            <li>
+              <span class="ce-code">CE4.04</span>
+              <span class="ce-text">En travaillant en équipe</span>
+            </li>
+            <li>
+              <span class="ce-code">CE4.05</span>
+              <span class="ce-text">En sensibilisant efficacement des utilisateurs</span>
+            </li>
+          </ul>
+        </div>
+
+        <div class="comp-col">
+          <div class="comp-col-title">Apprentissages critiques</div>
+          <ul class="ac-list">
+            <li>
+              <span class="ac-code">AC24.01</span>
+              <span class="ac-text">Connaître et utiliser les bonnes pratiques et les recommandations de cybersécurité</span>
+            </li>
+            <li>
+              <span class="ac-code">AC24.02</span>
+              <span class="ac-text">Mettre en œuvre les outils fondamentaux de sécurisation d'une infrastructure du réseau</span>
+            </li>
+            <li>
+              <span class="ac-code">AC24.03</span>
+              <span class="ac-text">Sécuriser les services</span>
+            </li>
+            <li>
+              <span class="ac-code">AC24.04</span>
+              <span class="ac-text">Choisir les outils cryptographiques adaptés au besoin fonctionnel du système d'information</span>
+            </li>
+            <li>
+              <span class="ac-code">AC24.05</span>
+              <span class="ac-text">Connaître les différents types d'attaque</span>
+            </li>
+            <li>
+              <span class="ac-code">AC24.06</span>
+              <span class="ac-text">Comprendre des documents techniques en anglais</span>
+            </li>
+          </ul>
+        </div>
+
+      </div>
+
+      <div class="comp-situations">
+        <span class="sit-label">Situations pro //</span>
+        <span class="sit-tag">Analyse de l'existant & étude des besoins de sécurité</span>
+        <span class="sit-tag">Évolution & mise en conformité du SI</span>
+      </div>
+    </div>
+
+    <!-- BILAN C4 -->
+    <div class="bilan-card">
+      <div class="bilan-text">
+        <p>// À compléter une fois la compétence validée en fin d'année.</p>
+      </div>
+    </div>
+
+    <!-- PROJETS C4 -->
+    <div class="section-label">PROJETS RÉALISÉS — C4</div>
+    <div class="projets-placeholder">
+      <span>// EN COURS</span>
+      <p>Les projets seront ajoutés au fur et à mesure de l'année.</p>
+    </div>
+
+    <div class="divider" style="margin: 0 0 3rem 0;"></div>
+
+    <!-- ══════════════════════════════════════════
+         COMPÉTENCE 5 — SURVEILLER
+    ══════════════════════════════════════════ -->
+    <div id="c5" class="section-label">COMPÉTENCE 5 — SURVEILLER</div>
+
+    <div class="competence-block">
+      <div class="comp-header">
+        <div class="comp-number">C5</div>
+        <div class="comp-header-text">
+          <div class="comp-meta">Surveiller un système d'information sécurisé</div>
+          <h2>Surveiller — Mettre en place et exploiter des dispositifs de supervision pour assurer sécurité et disponibilité</h2>
+          <p class="comp-desc-short">Identifier et analyser les incidents, évaluer les risques, proposer des actions correctives ou préventives. Contribuer à la mise en œuvre d'une politique de cybersécurité proactive et à l'amélioration continue du niveau de protection de l'infrastructure.</p>
+        </div>
+      </div>
+
+      <div class="comp-body">
+
+        <div class="comp-col">
+          <div class="comp-col-title">Composantes essentielles</div>
+          <ul class="ce-list">
+            <li>
+              <span class="ce-code">CE5.01</span>
+              <span class="ce-text">En assurant une veille permanente</span>
+            </li>
+            <li>
+              <span class="ce-code">CE5.02</span>
+              <span class="ce-text">En réalisant les mises à jour critiques</span>
+            </li>
+            <li>
+              <span class="ce-code">CE5.03</span>
+              <span class="ce-text">En automatisant des tâches</span>
+            </li>
+            <li>
+              <span class="ce-code">CE5.04</span>
+              <span class="ce-text">En s'intégrant dans une équipe</span>
+            </li>
+            <li>
+              <span class="ce-code">CE5.05</span>
+              <span class="ce-text">En surveillant le comportement du réseau</span>
+            </li>
+            <li>
+              <span class="ce-code">CE5.06</span>
+              <span class="ce-text">En veillant au respect des contrats et à la conformité des obligations du système d'information</span>
+            </li>
+          </ul>
+        </div>
+
+        <div class="comp-col">
+          <div class="comp-col-title">Apprentissages critiques</div>
+          <ul class="ac-list">
+            <li>
+              <span class="ac-code">AC25.01</span>
+              <span class="ac-text">Administrer les protections contre les logiciels malveillants</span>
+            </li>
+            <li>
+              <span class="ac-code">AC25.02</span>
+              <span class="ac-text">Prendre en main des outils de test de pénétration réseau/système</span>
+            </li>
+          </ul>
+        </div>
+
+      </div>
+
+      <div class="comp-situations">
+        <span class="sit-label">Situations pro //</span>
+        <span class="sit-tag">Surveillance & analyse du SI</span>
+        <span class="sit-tag">Audit de sécurité</span>
+        <span class="sit-tag">Gestion d'un incident de sécurité</span>
+      </div>
+    </div>
+
+    <!-- BILAN C5 -->
+    <div class="bilan-card">
+      <div class="bilan-text">
+        <p>// À compléter une fois la compétence validée en fin d'année.</p>
+      </div>
+    </div>
+
+    <!-- PROJETS C5 -->
+    <div class="section-label">PROJETS RÉALISÉS — C5</div>
+    <div class="projets-placeholder">
+      <span>// EN COURS</span>
+      <p>Les projets seront ajoutés au fur et à mesure de l'année.</p>
+    </div>
+
+    <div class="divider" style="margin: 0 0 3rem 0;"></div>
+
+    <!-- ══════════════════════════════════════════
+         LIEN BUT 1
+    ══════════════════════════════════════════ -->
+    <div id="but1-link" class="section-label">COMPÉTENCES BUT 1</div>
+
+    <div class="but1-link-card">
+      <div class="but1-link-text">
+        <h4>Consulter mes compétences de 1ère année</h4>
+        <p>// C1 Administrer — C2 Connecter — C3 Programmer · IUT de Colmar · 2024-2025</p>
+      </div>
+      <a href="but1.html" class="but1-btn">
+        Voir le BUT 1
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M5 12h14M12 5l7 7-7 7"/>
+        </svg>
+      </a>
+    </div>
+
+  </div><!-- fin .content -->
+
+  <div class="divider"></div>
+
+  <div class="back-section">
+    <a href="parcours.html" class="btn">← Retour au parcours</a>
+    <a href="index.html" class="btn">Accueil</a>
+  </div>
+
+  <footer>
+    <span>© 2025 — Chloé Charon</span>
+    <span style="color:var(--text-dim);">BUT 2 — Compétences</span>
+    <span>v1.0.0</span>
+  </footer>
+
+  <script>
+    const cursor = document.getElementById('cursor');
+    const dot = document.getElementById('cursorDot');
+    document.addEventListener('mousemove', e => {
+      cursor.style.left = e.clientX + 'px';
+      cursor.style.top  = e.clientY + 'px';
+      dot.style.left    = e.clientX + 'px';
+      dot.style.top     = e.clientY + 'px';
+    });
+
+    // Subnav active au scroll
+    const sections = {
+      c4: document.getElementById('c4'),
+      c5: document.getElementById('c5'),
+      'but1-link': document.getElementById('but1-link')
+    };
+    const subnavItems = document.querySelectorAll('.subnav-item');
+    window.addEventListener('scroll', () => {
+      let current = 'c4';
+      for (const [id, el] of Object.entries(sections)) {
+        if (el && el.getBoundingClientRect().top < 150) current = id;
+      }
+      subnavItems.forEach(item => {
+        item.classList.toggle('active', item.dataset.target === current);
+      });
+    });
+  </script>
+</body>
+</html>
